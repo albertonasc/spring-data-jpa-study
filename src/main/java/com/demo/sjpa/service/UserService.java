@@ -4,11 +4,12 @@ import com.demo.sjpa.controller.dto.CreateUserDto;
 import com.demo.sjpa.controller.dto.UpdateUserDto;
 import com.demo.sjpa.entity.UserEntity;
 import com.demo.sjpa.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.isNull;
@@ -33,8 +34,10 @@ public class UserService {
         return userRepository.save(entity);
     }
 
-    public List<UserEntity> findAll() {
-        return userRepository.findAll();
+    public Page<UserEntity> findAll(Integer page, Integer pageSize) {
+        var pageRequest = PageRequest.of(page, pageSize);
+
+        return userRepository.findAll(pageRequest);
     }
 
     public Optional<UserEntity> findById(Long userId) {

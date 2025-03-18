@@ -1,14 +1,16 @@
 package com.demo.sjpa.controller;
 
+import com.demo.sjpa.controller.dto.ApiResponse;
 import com.demo.sjpa.controller.dto.CreateUserDto;
+import com.demo.sjpa.controller.dto.PaginationResponse;
 import com.demo.sjpa.controller.dto.UpdateUserDto;
 import com.demo.sjpa.entity.UserEntity;
 import com.demo.sjpa.service.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -29,11 +31,15 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserEntity>> listAll() {
+    public ResponseEntity<ApiResponse<UserEntity>> listAll(@RequestParam(name = "page", defaultValue = "0") Integer page,
+                                                    @RequestParam(name = "pagaSize", defaultValue = "5") Integer pageSize) {
 
-        var users= userService.findAll();
+        var pageResponse = userService.findAll(page, pageSize);
 
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(new ApiResponse<>(
+                pageResponse.getContent(),
+                new PaginationResponse(pageResponse.getNumber(), pageResponse.getSize(), pageResponse.getTotalElements(), pageResponse.getTotalPages())
+        ));
     }
 
     @GetMapping(path = "/{userId}")
