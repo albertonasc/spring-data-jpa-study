@@ -6,7 +6,6 @@ import com.demo.sjpa.controller.dto.PaginationResponse;
 import com.demo.sjpa.controller.dto.UpdateUserDto;
 import com.demo.sjpa.entity.UserEntity;
 import com.demo.sjpa.service.UserService;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,9 +31,10 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<UserEntity>> listAll(@RequestParam(name = "page", defaultValue = "0") Integer page,
-                                                    @RequestParam(name = "pagaSize", defaultValue = "5") Integer pageSize) {
+                                                           @RequestParam(name = "pageSize", defaultValue = "5") Integer pageSize,
+                                                           @RequestParam(name = "orderBy", defaultValue = "desc") String orderBy) {
 
-        var pageResponse = userService.findAll(page, pageSize);
+        var pageResponse = userService.findAll(page, pageSize, orderBy);
 
         return ResponseEntity.ok(new ApiResponse<>(
                 pageResponse.getContent(),

@@ -6,6 +6,7 @@ import com.demo.sjpa.entity.UserEntity;
 import com.demo.sjpa.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -34,8 +35,14 @@ public class UserService {
         return userRepository.save(entity);
     }
 
-    public Page<UserEntity> findAll(Integer page, Integer pageSize) {
-        var pageRequest = PageRequest.of(page, pageSize);
+    public Page<UserEntity> findAll(Integer page, Integer pageSize, String orderBy) {
+
+        var direction = Sort.Direction.DESC;
+        if (orderBy.equalsIgnoreCase("asc")) {
+            direction = Sort.Direction.ASC;
+        }
+
+        var pageRequest = PageRequest.of(page, pageSize, direction, "createdAt");
 
         return userRepository.findAll(pageRequest);
     }

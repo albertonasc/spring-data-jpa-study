@@ -4,15 +4,15 @@ meta {
   seq: 5
 }
 
-post {
-  url: http://localhost:8080/users
+put {
+  url: http://localhost:8080/users/5
   body: json
   auth: none
 }
 
 body:json {
   {
-    "name": "Bia",
-    "age": 28
+    "name": "Beto Nascimento",
+    "age": 38
   }
 }
