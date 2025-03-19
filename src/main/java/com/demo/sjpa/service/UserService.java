@@ -35,16 +35,38 @@ public class UserService {
         return userRepository.save(entity);
     }
 
-    public Page<UserEntity> findAll(Integer page, Integer pageSize, String orderBy) {
+    public Page<UserEntity> findAll(Integer page, Integer pageSize, String orderBy, String name, Long age) {
 
+        var pageRequest = getPageRequest(page, pageSize, orderBy);
+
+
+        return findWithFilter(name, age, pageRequest);
+    }
+
+    private Page<UserEntity> findWithFilter(String name, Long age, PageRequest pageRequest) {
+        if (StringUtils.hasText(name) && !isNull(age)) {
+            return userRepository.findByNameAndAgeGreaterThanEqual(name, age, pageRequest);
+        }
+
+        if(StringUtils.hasText(name)) {
+            return userRepository.findByName(name, pageRequest);
+        }
+
+        if(!isNull(age)) {
+            return userRepository.findByAgeGreaterThanEqual(age, pageRequest);
+        }
+
+        return userRepository.findAll(pageRequest);
+    }
+
+    private PageRequest getPageRequest(Integer page, Integer pageSize, String orderBy) {
         var direction = Sort.Direction.DESC;
         if (orderBy.equalsIgnoreCase("asc")) {
             direction = Sort.Direction.ASC;
         }
 
         var pageRequest = PageRequest.of(page, pageSize, direction, "createdAt");
-
-        return userRepository.findAll(pageRequest);
+        return pageRequest;
     }
 
     public Optional<UserEntity> findById(Long userId) {
